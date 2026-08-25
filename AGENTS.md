@@ -7,10 +7,10 @@ content live here:
 1. **Truly universal principles** — apply no matter what the project even is (not
    tied to any technology or domain). Written out in full, inline, below.
 2. **An index of domain-specific knowledge files** — e.g. "if you're touching Google
-   Apps Script / clasp, see `~/knowledge/gas-apps-script.md`". The actual lessons for
-   a given technology live in their own file under `~/knowledge/`, not inlined here,
+   Apps Script / clasp, see `~/.knowledge/gas-apps-script.md`". The actual lessons for
+   a given technology live in their own file under `~/.knowledge/`, not inlined here,
    so that a project unrelated to that technology (e.g. a writing project) never has
-   to read past a one-line pointer it can ignore. Each `~/knowledge/*.md` file is
+   to read past a one-line pointer it can ignore. Each `~/.knowledge/*.md` file is
    itself cross-repo within its domain (e.g. useful to any GAS/clasp project, not just
    the one that happened to surface the lesson) — link to the originating repo's own
    docs from there for project-specific setup detail.
@@ -43,18 +43,18 @@ actions that are risky/destructive/outward-facing still warrant confirmation bef
 acting. The distinction is: don't ask them to do *verification legwork* that you could
 instead build the capability to do yourself.
 
-### 2026-08-19 — Division of labor between this file, `~/knowledge/`, and a `CLAUDE.md`
+### 2026-08-19 — Division of labor between this file, `~/.knowledge/`, and a `CLAUDE.md`
 
 Three tiers, by audience:
 - `~/AGENTS.md` (this file): universal principles in full, plus a one-line index
   entry per domain-specific knowledge file. Not the place for a specific technology's
   gotchas — see below.
-- `~/knowledge/<topic>.md`: the substantive home for anything tied to a specific
+- `~/.knowledge/<topic>.md`: the substantive home for anything tied to a specific
   technology/domain (a language, a platform, a tool) that's cross-repo *within that
   domain* — e.g. any GAS/clasp project benefits from `gas-apps-script.md`, but a
   project with no GAS in it gains nothing from reading it inline in `AGENTS.md`.
 - `CLAUDE.md` (global or per-repo): stays mostly pointers back to `AGENTS.md`/
-  `~/knowledge/` and to each repo's own docs, plus whatever is genuinely specific to
+  `~/.knowledge/` and to each repo's own docs, plus whatever is genuinely specific to
   Claude Code itself (its tool/slash-command conventions, and policy for how Claude
   drives *other* agents — subagents, multi-agent workflows). Not a parallel copy of
   general knowledge that belongs in one of the tiers above. If content would be
@@ -69,5 +69,5 @@ Three tiers, by audience:
 
 ## Domain-specific knowledge index
 
-- **Google Apps Script / clasp**: see [`~/knowledge/gas-apps-script.md`](./knowledge/gas-apps-script.md)
+- **Google Apps Script / clasp**: see [`~/.knowledge/gas-apps-script.md`](./.knowledge/gas-apps-script.md)
   (esbuild-bundled simple-trigger gotcha, `clasp run` permission/OAuth-scope setup).
