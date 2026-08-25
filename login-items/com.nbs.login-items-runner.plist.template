@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.nbs.login-items-runner</string>
+
+    <!-- Runs every executable directly inside ~/Library/Scripts/login-items.d/
+         To add a new startup task later: drop a script there + chmod +x it.
+         No plist editing needed for new tasks. -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/Library/Scripts/run-login-items.sh</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/login-items-runner.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/login-items-runner.stderr.log</string>
+</dict>
+</plist>

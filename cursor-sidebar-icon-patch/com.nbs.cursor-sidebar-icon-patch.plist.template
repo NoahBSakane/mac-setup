@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.nbs.cursor-sidebar-icon-patch</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>__HOME__/Library/Scripts/cursor-sidebar-icon-patch.sh</string>
+    </array>
+
+    <!-- Run once at every login/restart -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Also re-run shortly after Cursor auto-updates either extension,
+         since that replaces the extension.js bundle and drops the patch. -->
+    <key>WatchPaths</key>
+    <array>
+        <string>__HOME__/.cursor/extensions</string>
+    </array>
+
+    <!-- WatchPaths can fire in bursts while an update unpacks; avoid overlap. -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>__HOME__/Library/Logs/cursor-sidebar-icon-patch.stdout.log</string>
+    <key>StandardErrorPath</key>
+    <string>__HOME__/Library/Logs/cursor-sidebar-icon-patch.stderr.log</string>
+</dict>
+</plist>
