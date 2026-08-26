@@ -5,7 +5,7 @@ nbsさんの個人Mac設定を再現可能にするためのスナップショ�
 ## 構成
 
 | ディレクトリ | 内容 |
-|---|---|
+| --- | --- |
 | [ai-agent-config/](ai-agent-config/ai-agent-config.md) | Claude Code / Codex CLIの指示ファイル(モデル選択方針・外部CLIへの委譲ルールなど)を他Macへ複製する仕組み |
 | [cursor-sidebar-icon-patch/](cursor-sidebar-icon-patch/cursor-claude-codex-sidebar-fix.md) | Cursorの左サイドバーにClaude Code/Codexアイコンが出ない問題への対処(launchdで自動・再パッチ) |
 | [login-items/](login-items/login-items-startup-scripts.md) | ログイン時に自動実行したいスクリプトを置くだけで動く汎用フォルダの仕組み(login-items.d) |

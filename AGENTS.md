@@ -46,6 +46,7 @@ instead build the capability to do yourself.
 ### 2026-08-19 — Division of labor between this file, `~/.knowledge/`, and a `CLAUDE.md`
 
 Three tiers, by audience:
+
 - `~/AGENTS.md` (this file): universal principles in full, plus a one-line index
   entry per domain-specific knowledge file. Not the place for a specific technology's
   gotchas — see below.
