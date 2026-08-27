@@ -1,5 +1,7 @@
 #!/bin/bash
 
+command -v jq >/dev/null 2>&1 || exit 0
+
 set -euo pipefail
 
 payload="$(cat)"

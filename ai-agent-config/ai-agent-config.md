@@ -34,8 +34,10 @@ mac-setup/
   ai-agent-config/
     ai-agent-config.md         → このファイル
     codex-AGENTS.md            → 設置先: ~/.codex/AGENTS.md
+    install.sh                 → 下記2つのインストーラを順番に実行するラッパー(他Macへの一括導入用)
     install-ai-agent-config.sh → 上記3つの配置 + ~/.claude/AGENTS.mdのsymlink作成を行うスクリプト
                                   (AGENTS.md/CLAUDE.mdは一つ上の階層=repo直下から読む)
+    install-delegation-hooks.sh → hookスクリプトの配置と ~/.claude/settings.json へのhooksマージ
     diff-ai-agent-config.sh    → repo側とlive側、3組それぞれの機械的diffを取るだけのスクリプト
 ```
 
@@ -57,7 +59,14 @@ cp ~/.codex/AGENTS.md ./ai-agent-config/codex-AGENTS.md
 ### 他Macへ持っていく(リポジトリ → 生きているファイル)
 
 1. `git clone`(または既存クローンなら`git pull`)で他Macへこの`mac-setup`リポジトリを持ってくる
-2. 転送先で`mac-setup/ai-agent-config/install-ai-agent-config.sh`を実行する
+2. 転送先で`mac-setup/ai-agent-config/install.sh`を実行する。これ1本で指示ファイルの配置と委譲hookの設置の両方を行う
+
+片方だけ入れたい場合は、従来どおり個別スクリプトを実行してよい:
+
+```bash
+./ai-agent-config/install-ai-agent-config.sh   # AGENTS.md / CLAUDE.md / codex-AGENTS.md のみ
+./ai-agent-config/install-delegation-hooks.sh  # hookの配置と settings.json へのマージのみ
+```
 
 ## 注意点
 
@@ -78,7 +87,7 @@ Claude CodeがCLAUDE.mdの「エージェント構成の事前承認」を見落
 - `hooks/delegation-status.sh`: 過去24時間または指定セッションの委譲実績を集計する
 - `install-delegation-hooks.sh`: 上記スクリプトの配置とsettings.jsonへのhook定義のマージを行う
 
-設置は次のスクリプトを実行する。
+設置は `install.sh` 一発で指示ファイル側とまとめて行える。hookだけ入れたい場合は次のスクリプトを実行する。
 
 ```bash
 ./ai-agent-config/install-delegation-hooks.sh
