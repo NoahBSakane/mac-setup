@@ -64,3 +64,31 @@ cp ~/.codex/AGENTS.md ./ai-agent-config/codex-AGENTS.md
 - installスクリプトは既存ファイルを**バックアップなしで上書き**する。他Mac側で個別カスタムを既に加えている場合は、上書き前にそちらを先に確認・退避すること(迷ったら`/reconcile-agent-config`で差分を見てから判断する)。
 - `~/AGENTS.md`と`~/.codex/AGENTS.md`は内容が一部重複しているが別ファイル。CodexはグローバルスコープとしてCODEX_HOME直下の`AGENTS.md`しか見ず`~/AGENTS.md`という場所自体を認識しないため、共通ルールを変えたら両方に手で反映する。
 - 設定文面はマシン固有の事実(利用プランの有無など)をベタ書きしないようにしてある。例えばGemini CLI(Antigravity CLI `agy`)まわりの記述は「無料枠のMacもあればWorkspace等の有償プランのMacもある」という前提で、どちらでも矛盾なく通じる書き方にしてある。新しく機種固有の事情を追記するときも、特定の1台にしか当てはまらない断定は避けること。
+
+## エージェント委譲ルール遵守hook
+
+Claude CodeがCLAUDE.mdの「エージェント構成の事前承認」を見落とさないよう、毎ターンのリマインド、セッション最初の編集時に一度だけ止めるspeed bump、外部CLI・サブエージェントの委譲監査ログを追加する。構成選択の意味判断や承認そのものを自動化するものではない。
+
+構成ファイルは以下の通りである。
+
+- `hooks/hooks-fragment.json`: `~/.claude/settings.json`へマージするhook定義
+- `hooks/user-prompt-delegation-reminder.sh`: `UserPromptSubmit`で構成検討を促す
+- `hooks/pre-edit-composition-check.sh`: 最初の`Write`・`Edit`系呼び出しだけをdenyする
+- `hooks/post-tool-delegation-logger.sh`: 外部CLIと`Agent`・`Task`呼び出しを`~/.claude/delegation-hooks/delegation-log.jsonl`へ追記する
+- `hooks/delegation-status.sh`: 過去24時間または指定セッションの委譲実績を集計する
+- `install-delegation-hooks.sh`: 上記スクリプトの配置とsettings.jsonへのhook定義のマージを行う
+
+設置は次のスクリプトを実行する。
+
+```bash
+./ai-agent-config/install-delegation-hooks.sh
+```
+
+`delegation-status.sh`は引数なしで過去24時間、セッションIDを渡すとそのセッション全期間を表示する。
+
+```bash
+~/.claude/hooks/delegation/delegation-status.sh
+~/.claude/hooks/delegation/delegation-status.sh SESSION_ID
+```
+
+既存の`install-ai-agent-config.sh`は管理対象3ファイルを単純上書きするが、このインストーラはsettings.jsonの他の個人設定を保持したまま`hooks`だけをマージする。同じhookは再実行時に重複追加せず、既存settings.jsonがある場合は同じディレクトリへ`settings.json.bak.<timestamp>`を作成してから、一時ファイルのJSON検証を通った内容だけを反映する。テスト時は`HOME`を一時ディレクトリへ差し替えられる。
