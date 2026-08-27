@@ -4,7 +4,7 @@
 
 ## 何のためのものか
 
-Claude Code / Codex CLIには、モデル選択方針・外部CLI(Codex/Gemini CLI)への委譲ルール・応答スタイルのペルソナなど、このMacで積み上げてきた個人設定が入っている。これらは`~`直下や`~/.claude`・`~/.codex`に置かれたただのテキストファイルなので、OS再インストールや別のMacへの引っ越しでは何もしなければ消える。このリポジトリにスナップショットとして置いておき、`install-ai-agent-config.sh`一発で復元できるようにしてある。
+Claude Code / Codex CLIには、モデル選択方針・外部CLI(Codex/Gemini CLI)への委譲ルール・応答スタイルのペルソナなど、このMacで積み上げてきた個人設定が入っている。これらは`~`直下や`~/.claude`・`~/.codex`に置かれたただのテキストファイルなので、OS再インストールや別のMacへの引っ越しでは何もしなければ消える。このリポジトリにスナップショットとして置いておき、`install.sh`一発で復元できるようにしてある。
 
 ## 構成
 
@@ -34,10 +34,9 @@ mac-setup/
   ai-agent-config/
     ai-agent-config.md         → このファイル
     codex-AGENTS.md            → 設置先: ~/.codex/AGENTS.md
-    install.sh                 → 下記2つのインストーラを順番に実行するラッパー(他Macへの一括導入用)
-    install-ai-agent-config.sh → 上記3つの配置 + ~/.claude/AGENTS.mdのsymlink作成を行うスクリプト
-                                  (AGENTS.md/CLAUDE.mdは一つ上の階層=repo直下から読む)
-    install-delegation-hooks.sh → hookスクリプトの配置と ~/.claude/settings.json へのhooksマージ
+    install.sh                 → 上記3つの配置(+ ~/.claude/AGENTS.mdのsymlink作成)と、下記hook
+                                  スクリプトの配置・~/.claude/settings.jsonへのマージを1本で行う
+                                  インストーラ(AGENTS.md/CLAUDE.mdは一つ上の階層=repo直下から読む)
     diff-ai-agent-config.sh    → repo側とlive側、3組それぞれの機械的diffを取るだけのスクリプト
 ```
 
@@ -61,13 +60,6 @@ cp ~/.codex/AGENTS.md ./ai-agent-config/codex-AGENTS.md
 1. `git clone`(または既存クローンなら`git pull`)で他Macへこの`mac-setup`リポジトリを持ってくる
 2. 転送先で`mac-setup/ai-agent-config/install.sh`を実行する。これ1本で指示ファイルの配置と委譲hookの設置の両方を行う
 
-片方だけ入れたい場合は、従来どおり個別スクリプトを実行してよい:
-
-```bash
-./ai-agent-config/install-ai-agent-config.sh   # AGENTS.md / CLAUDE.md / codex-AGENTS.md のみ
-./ai-agent-config/install-delegation-hooks.sh  # hookの配置と settings.json へのマージのみ
-```
-
 ## 注意点
 
 - installスクリプトは既存ファイルを**バックアップなしで上書き**する。他Mac側で個別カスタムを既に加えている場合は、上書き前にそちらを先に確認・退避すること(迷ったら`/reconcile-agent-config`で差分を見てから判断する)。
@@ -85,19 +77,12 @@ Claude CodeがCLAUDE.mdの「エージェント構成の事前承認」を見落
 - `hooks/pre-edit-composition-check.sh`: 最初の`Write`・`Edit`系呼び出しだけをdenyする
 - `hooks/post-tool-delegation-logger.sh`: 外部CLIと`Agent`・`Task`呼び出しを`~/.claude/delegation-hooks/delegation-log.jsonl`へ追記する
 - `hooks/delegation-status.sh`: 過去24時間または指定セッションの委譲実績を集計する
-- `install-delegation-hooks.sh`: 上記スクリプトの配置とsettings.jsonへのhook定義のマージを行う
 
-設置は `install.sh` 一発で指示ファイル側とまとめて行える。hookだけ入れたい場合は次のスクリプトを実行する。
-
-```bash
-./ai-agent-config/install-delegation-hooks.sh
-```
-
-`delegation-status.sh`は引数なしで過去24時間、セッションIDを渡すとそのセッション全期間を表示する。
+設置は`install.sh`(指示ファイル側とまとめて1本で実行)が行う。`delegation-status.sh`は引数なしで過去24時間、セッションIDを渡すとそのセッション全期間を表示する。
 
 ```bash
 ~/.claude/hooks/delegation/delegation-status.sh
 ~/.claude/hooks/delegation/delegation-status.sh SESSION_ID
 ```
 
-既存の`install-ai-agent-config.sh`は管理対象3ファイルを単純上書きするが、このインストーラはsettings.jsonの他の個人設定を保持したまま`hooks`だけをマージする。同じhookは再実行時に重複追加せず、既存settings.jsonがある場合は同じディレクトリへ`settings.json.bak.<timestamp>`を作成してから、一時ファイルのJSON検証を通った内容だけを反映する。テスト時は`HOME`を一時ディレクトリへ差し替えられる。
+`install.sh`は指示ファイル3つ(AGENTS.md/CLAUDE.md/codex-AGENTS.md)は単純上書きするが、settings.jsonは他の個人設定と同居しているファイルなので、`hooks`キーだけをマージする(既存キーは保持)。同じhookは再実行時に重複追加せず、既存settings.jsonがある場合は同じディレクトリへ`settings.json.bak.<timestamp>`を作成してから、一時ファイルのJSON検証を通った内容だけを反映する。テスト時は`HOME`を一時ディレクトリへ差し替えられる。
